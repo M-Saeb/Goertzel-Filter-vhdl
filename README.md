@@ -46,13 +46,6 @@ Compute the magnitude of the target frequency component:
 ### Summary
 The Goertzel algorithm processes each input sample to update its internal state and finally computes the magnitude of the desired frequency component. *This method is efficient for detecting specific frequencies within a signal.*
 
-## Shared Folder [Link](https://fhdoprod.sharepoint.com/:f:/r/sites/Stud-Microelectronic/Shared%20Documents/General?csf=1&web=1&e=UawF4C)
-- Content
-  - Milestone
-  - Minute Meeting
-  - Task Distribution
-  - Design
-
 ## Project Overview
 
 The Goertzel Algorithm is implemented with the following specifications:
@@ -63,64 +56,12 @@ The Goertzel Algorithm is implemented with the following specifications:
 - Signal frequency to detect: 150 kHz
 - Output: 20-bit signed level indication
 
-## Modules
-
-### Module A: The system
-- **Function**: container for the modules
-- **Tasks**:
-- **Interface**:
-  - rst
-  - clk
-  - 12-bit unsigned input samples.
-  - N (number of sample: int)[generic]
-  - frequency sample
-  - output magnitude
-  - output real number
-  - output imaginary number
- 
-### Module B: Filler
-- **Function**: Convert the 12-bit unsigned samples to 20-bit signed samples (2’s complement)
-- **Tasks**:
-  - Accept 12-bit unsigned input samples.
-  - Convert the 12-bit unsigned samples to 20-bit signed samples (2’s complement).
-  - Pass the converted samples to the Goertzel Module.
-- **Interface**:
-  - rst
-  - clk
-  - 12-bit unsigned input samples.
-  - output 20-bit signed samples
-
-### Module B: Goertzel Core Module
-- **Function**: Implements the Goertzel algorithm to detect the presence and level of the 150 kHz signal within the input data.
-- **Tasks**:
-  - Initialize algorithm parameters.
-  - Implement the Goertzel recurrence relation to process each sample.
-  - Calculate the magnitude squared of the resulting complex number.
-  - Pass the computed result to the Output and Scaling Module.
-
-### Module C: Output and Scaling Module
-- **Function**: Scales the Goertzel output to fit the desired output range and format, and provides the final signed output number.
-- **Tasks**:
-  - Accept the result from the Goertzel Core Module.
-  - Apply necessary scaling to ensure the output fits within the 20-bit signed range.
-  - Handle any overflow conditions.
-  - Output the final 20-bit signed result.
-
-### Module D: Control Unit Module
-- **Function**: Coordinates the operation of the Input Interface, Goertzel Core, and Output and Scaling Modules, ensuring proper data flow and timing.
-- **Tasks**:
-  - Generate control signals for data sampling and processing.
-  - Ensure proper sequencing of operations.
-  - Manage the start and stop conditions for processing each data set.
-
-### Module E: Testbench Module
-- **Function**: Simulates the entire system to verify functionality and performance.
-- **Tasks**:
-  - Provide simulated input data to the Input Interface Module.
-  - Capture and analyze the output from the Output and Scaling Module.
-  - Verify the correctness of the overall design through various test scenarios.
 
 ## Getting Started
+There are 2 folder :
+ 1. Goertzel filter matlab :
+     signal waveform generated and goertzel filter verified in matlab. 
+ 3. vhdl :- code of goertzel filter implementation in vhdl.
 
 ### Prerequisites
 - VHDL Simulator (e.g., ModelSim, Vivado)
