@@ -70,5 +70,5 @@ There are 2 folder :
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/MR-Khan0099/goertzel-vhdl.git
-   cd goertzel-vhdl
+   git clone https://github.com/MR-Khan0099/Goertzel-Filter-vhdl.git
+   cd Goertzel-Filter-vhdl
