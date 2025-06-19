@@ -23,24 +23,24 @@ rect_5K_wave = square(2*pi*5e3*(0:N-1)/Fs);
 rect_200K_wave = square(2*pi*200e3*(0:N-1)/Fs);
 rect_2M_wave = square(2*pi*2e6*(0:N-1)/Fs);
 
+
 %Triangle wave with 173 kHz, 170 kHz, 176 kHz, 5 kHz,
 % 200 kHz, 2 MHz
-tri_173K_wave = sawtooth(2*pi*173e3*(0:N-1)/Fs);
-tri_170K_wave = sawtooth(2*pi*170e3*(0:N-1)/Fs);
-tri_176K_wave = sawtooth(2*pi*176e3*(0:N-1)/Fs);
-tri_5K_wave = sawtooth(2*pi*5e3*(0:N-1)/Fs);
-tri_200K_wave = sawtooth(2*pi*200e3*(0:N-1)/Fs);
+tri_173k_wave = sawtooth(2*pi*173e3*(0:N-1)/Fs);
+tri_170k_wave = sawtooth(2*pi*170e3*(0:N-1)/Fs);
+tri_176k_wave = sawtooth(2*pi*176e3*(0:N-1)/Fs);
+tri_5k_wave = sawtooth(2*pi*5e3*(0:N-1)/Fs);
+tri_200k_wave = sawtooth(2*pi*200e3*(0:N-1)/Fs);
 tri_2M_wave = sawtooth(2*pi*2e6*(0:N-1)/Fs);
 
 
 % Sine Waves with 173 kHz, 170 kHz, 176 kHz, 5 kHz,
 % 200 kHz, 2 MHz
-sin_173K_wave = sin(2*pi*173e3*(0:N-1)/Fs);
-sin_170K_wave = sin(2*pi*170e3*(0:N-1)/Fs);
-sin_176K_wave = sin(2*pi*176e3*(0:N-1)/Fs);
-sin_5K_wave = sin(2*pi*5e3*(0:N-1)/Fs);
-sin_200K_wave = sin(2*pi*200e3*(0:N-1)/Fs);
-sin_2M_wave = sin(2*pi*2e6*(0:N-1)/Fs);
+sin_173k_wave = sin(2*pi*150e3*(0:N-1)/Fs);
+sin_170k_wave = sin(2*pi*149e3*(0:N-1)/Fs);
+sin_151k_wave = sin(2*pi*151e3*(0:N-1)/Fs);
+sin_5k_wave = sin(2*pi*5e3*(0:N-1)/Fs);
+sin_200k_wave = sin(2*pi*200e3*(0:N-1)/Fs);
 
 
 % lo = sin(2*pi*697*(0:N-1)/Fs);
@@ -51,14 +51,14 @@ hi = sin(2*pi*1209*(0:N-1)/Fs);
 % offset of 12-bit
 offset = 2^11;
 
-rect_waves = rect_173K_wave + rect_170K_wave + rect_176K_wave + rect_5K_wave + rect_200K_wave + rect_2M_wave + offset;
-sin_waves = sin_173K_wave + sin_170K_wave + sin_176K_wave + sin_5K_wave + sin_200K_wave + sin_2M_wave + offset;
-tri_waves = tri_173K_wave + tri_170K_wave + tri_176K_wave + tri_5K_wave + tri_200K_wave + tri_2M_wave + offset;
+rect_waves = rect_150K_wave + rect_16K_wave + rect_10K_wave + rect_200K_wave + offset;
+sin_waves = sin_150k_wave + sin_149k_wave + sin_151k_wave + sin_5k_wave + sin_200k_wave + offset;
+tri_waves = tri_150k_wave + tri_149k_wave + tri_151k_wave + tri_5k_wave + tri_200k_wave + offset;
 
 
 % plot(mid)
 
-f = [173e3]; % frequencies to detect
+f = [150e3];
 freq_indices = round(f/Fs*N) + 1;   
 dft_data = goertzel(sin_waves,freq_indices);
 
@@ -74,3 +74,7 @@ figure
 plot(sin_waves);
 title('all waves');
 
+figure
+
+plot(sin_150k_wave+offset);
+title('sin 150k wave');

@@ -1,4 +1,4 @@
-function magnitude = my_Goertzel_filter(signal, target_freq, sampling_rate)
+function magnitude = goertzel_algortihm(signal, target_freq, sampling_rate)
     % Parameters
     N = length(signal); %Length of the signal
     k = round(0.5 + (N * target_freq/sampling_rate));
