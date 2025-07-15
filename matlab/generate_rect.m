@@ -5,7 +5,7 @@ T = 0.004; % Duration in seconds
 frequencies = [173e3, 170e3, 176e3, 5e3, 200e3, 2e6]; 
 A = 1; % Amplitude of the analog signal
 nBits = 14; % Number of bits for quantization (14-bit ADC)
-outputFile = 'rect_phase_digital.txt'; % Output file name
+outputFile = 'matlab/signal_files/rect_phase_digital.txt'; % Output file name
 
 % Generate the analog signal 
 t = 0:1/Fs:T-(1/Fs); % Time vector
@@ -14,7 +14,7 @@ analogSignal = zeros(size(t));
 for i = 1:length(frequencies)
     % Convert phase to radians
     phaseRad = deg2rad(0);
-    analogSignal = analogSignal + A * square(2 * pi * frequencies(i) * t + phaseRad);
+    analogSignal = analogSignal + generate_signal(frequencies(i), t, 'rectangular');
 end
 
 % Normalize the amplitude

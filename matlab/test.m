@@ -5,21 +5,6 @@ clear;
 close all;
 
 
-function signal = generate_signal(frequencies, t, scaling_value, type)
-
-    % Generate the signal based on the specified type
-    switch type
-        case 'sine'
-            signal = (sin(2 * pi * frequencies .* t) + 1) * scaling_value; % +1 to shift the signal to only positive values
-        case 'triangle'
-            signal = (sawtooth(2 * pi * frequencies .* t) + 1) * scaling_value; % +1 to shift the signal to only positive values
-        case 'rectangular'
-            signal = (square(2 * pi * frequencies .* t) + 1) * scaling_value; % +1 to shift the signal to only positive values
-        otherwise
-            error('Unsupported signal type');
-    end
-end
-
 % Define the parameters
 target_freq = 173e3; 
 N = 137;   % Number of Samples
@@ -29,10 +14,9 @@ t = 0:1/sampling_rate:(N-1)/sampling_rate; % Time vector
 
 frequencies = [173e3 170e3 176e3 5e3 200e3 2e6];
 
-scaling_value = 2^14 - 1; % Scaling ths signal to fit in 14 bits
 
 for i=1:1
-    signal = generate_signal(frequencies(i), t, scaling_value, 'sine'); % Generate the signal
+    signal = generate_signal(frequencies(i), t, 'sine'); % Generate the signal
 
     magnitude = goertzel_algortihm(signal, target_freq, sampling_rate);
 

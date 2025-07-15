@@ -14,7 +14,7 @@ analogSignal = zeros(size(t));
 for i = 1:length(frequencies)
     % Convert phase to radians
     phaseRad = deg2rad(0);
-    analogSignal = analogSignal + A * sin(2 * pi * frequencies(i) * t + phaseRad);
+    analogSignal = analogSignal + generate_signal(frequencies(i), t, 'sine');
 end
 
 % Normalize the amplitude

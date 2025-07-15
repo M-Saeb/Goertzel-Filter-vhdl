@@ -9,11 +9,11 @@ decimal_values = hex2dec(hex_values{1});
 % Define the target frequency
 target_freq = 173e3;
 % Goertzel parameters
-k = round(target_freq * N / Fs);
-omega = 2 * pi * k / N;
-sine = 0.1946;%sin(omega);
-cosine = 0.230;%cos(omega);
-coeff = 0.973;%2 * cosine;
+k = round(N * target_freq / Fs);
+w = (2 * pi * k) / N;
+sine = sin(w);
+cosine = cos(w);
+coeff = 2 * cosine;
 % Initialize variables
 Q0 = 0;
 Q1 = 0;
