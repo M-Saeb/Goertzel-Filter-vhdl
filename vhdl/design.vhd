@@ -1,64 +1,61 @@
 library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
-entity goertzel_filter is
+entity goertzel_algorithm is
     port (
-        input_signal : in unsigned (11 downto 0); -- 12-bit unsigned input
-        clk : in std_logic;                       -- Clock signal
-        rst : in std_logic;                       -- Reset signal
-        magnitude : out signed(39 downto 0)       -- 40-bit signed output magnitude
+        clk         : in  STD_LOGIC;
+        rst         : in  STD_LOGIC;
+        start       : in  STD_LOGIC;
+        sample_in   : in  STD_LOGIC_VECTOR(13 downto 0); -- 14-bit unsigned input
+        real_part   : out STD_LOGIC_VECTOR(33 downto 0); -- 34-bit output
+        imag_part   : out STD_LOGIC_VECTOR(33 downto 0); -- 34-bit output
+        magnitude_squared : out STD_LOGIC_VECTOR(33 downto 0) -- 34-bit output
     );
-end entity goertzel_filter;
+end goertzel_algorithm;
 
-architecture Behavioral of goertzel_filter is
-    constant N : integer := 135;  -- Number of samples
-    constant cosine_coef : signed(19 downto 0) := to_signed(18631, 20); -- Calculated coefficient
-    constant sine_coef : signed(19 downto 0) := to_signed(5860, 20);    -- Calculated coefficient
-    constant scale_factor : signed(19 downto 0) := to_signed(10000, 20);
-    
-    signal q0_v : signed(19 downto 0) := (others => '0');
-    signal q1_v : signed(19 downto 0) := (others => '0');
-    signal q2_v : signed(19 downto 0) := (others => '0');
-    signal real_part_v : signed(19 downto 0) := (others => '0');
-    signal imag_part_v : signed(19 downto 0) := (others => '0');
-    
+architecture Behavioral of goertzel_algorithm is
+    constant N : integer := 137; -- Number of samples
+    -- Precomputed coefficients (replace with your actual values from MATLAB/Python)
+    constant k : integer := 3; -- Rounded value of (N * f_target / f_sample)
+    constant cosine : integer := 16384; -- Q14 format, cos(w) ~ 1.0
+    constant sine   : integer := 4012;  -- Q14 format, sin(w) ~ 0.2447
+    constant coeff  : integer := 32768; -- Q14 format, 2*cos(w) ~ 2.0
+
+    signal Q1, Q2 : integer := 0;
+    signal sample_count : integer range 0 to N := 0;
+    signal real_out, imag_out, mag_sq_out : integer := 0;
+
 begin
-    process (clk, rst)
-        variable q0 : signed(19 downto 0) := (others => '0');
-        variable q1 : signed(19 downto 0) := (others => '0');
-        variable q2 : signed(19 downto 0) := (others => '0');
-        variable real_part : signed(19 downto 0) := (others => '0');
-        variable imag_part : signed(19 downto 0) := (others => '0');
-        variable input_sample : signed(19 downto 0);
-        variable magnitude_temp : signed(39 downto 0);
+    process(clk, rst)
+        variable Q0_var : integer := 0;
     begin
         if rst = '1' then
-            q0 := (others => '0');
-            q1 := (others => '0');
-            q2 := (others => '0');
-            real_part := (others => '0');
-            imag_part := (others => '0');
-            magnitude <= (others => '0');
+            Q1 <= 0;
+            Q2 <= 0;
+            sample_count <= 0;
+            real_out <= 0;
+            imag_out <= 0;
+            mag_sq_out <= 0;
         elsif rising_edge(clk) then
-            -- Convert 12-bit unsigned input signal to 20-bit signed
-            input_sample := signed(resize(input_signal, 20)) - (2**11);
-            
-            q0 := input_sample + resize(cosine_coef * q1 / scale_factor, 20) - q2;
-            q2 := q1;
-            q1 := q0;
-            
-            real_part := q1 - resize(q2 * cosine_coef / scale_factor, 20);
-            imag_part := resize(q2 * sine_coef / scale_factor, 20);
-            
-            magnitude_temp := resize(real_part * real_part + imag_part * imag_part, 40);
-            magnitude <= magnitude_temp;
-            
-            q0_v <= q0;
-            q1_v <= q1;
-            q2_v <= q2;
-            real_part_v <= real_part;
-            imag_part_v <= imag_part;
+            if start = '1' then
+                if sample_count < N then
+                    -- Using Q14 (Value of 16384) to handle floating-point operations
+                    Q0_var := (coeff * Q1) / 16384 - Q2 + to_integer(unsigned(sample_in));
+                    Q2 <= Q1;
+                    Q1 <= Q0_var;
+                    sample_count <= sample_count + 1;
+                else
+                    real_out <= Q1 - (Q2 * cosine) / 16384;
+                    imag_out <= (Q2 * sine) / 16384;
+                    mag_sq_out <= (Q1 - (Q2 * cosine) / 16384) * (Q1 - (Q2 * cosine) / 16384) + ((Q2 * sine) / 16384) * ((Q2 * sine) / 16384);
+                end if;
+            end if;
         end if;
     end process;
-end architecture Behavioral;
+
+    real_part <= std_logic_vector(to_signed(real_out, 34));
+    imag_part <= std_logic_vector(to_signed(imag_out, 34));
+    magnitude_squared <= std_logic_vector(to_signed(mag_sq_out, 34));
+
+end Behavioral;
