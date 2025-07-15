@@ -6,23 +6,17 @@ close all;
 
 % Define the parameters
 target_freq = 173e3; 
-amplitude = 1;  % Amplitude of the sine wave
 N = 137;   % Number of Samples
-sampling_rate = 7.4e6; % Sampling rate of 1 MHz
+sampling_rate = 7.4e6; % Sampling rate of 7.4 MHz
 
 t = 0:1/sampling_rate:(N-1)/sampling_rate; % Time vector
 
-frequencies = [173e3 170e3 176e3 5e3 200e3 2e6];
+frequencies = [200e6 173e3 170e3 176e3 5e3 200e3 2e6];
 
-for i=1:5
-    % For Sine waves
-    signal = (sin(2*pi*frequencies(i)*t)+1)*(2^13-1);
+scaling_value = 2^14 - 1; % Scaling ths signal to fit in 14 bits
 
-    % For Triangle waves
-    % signal = (sawtooth(2*pi*frequencies(i)*t)+1)*(2^13-1);
-
-    % For Rectangular waves
-    % signal = (square(2*pi*frequencies(i)*t)+1)*(2^13-1);
+for i=1:1
+    signal = generate_signal(frequencies(i), t, scaling_value, 'sine'); % Generate the signal
 
     magnitude = goertzel_algortihm(signal, target_freq, sampling_rate);
 
@@ -43,3 +37,4 @@ for i=1:5
     ylabel('Magnitude');
 
 end
+
