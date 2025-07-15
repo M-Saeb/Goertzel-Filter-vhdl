@@ -1,6 +1,6 @@
 % Parameters
 Fs = 7.4e6; % Sampling frequency in Hz
-T = 0.004; % Duration in seconds
+T = 0.001; % Duration in seconds
 % Frequencies of the sine waves in Hz
 frequencies = [173e3, 170e3, 176e3, 5e3, 200e3, 2e6]; 
 A = 1; % Amplitude of the analog signal

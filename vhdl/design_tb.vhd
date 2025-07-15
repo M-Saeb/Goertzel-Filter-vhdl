@@ -58,11 +58,13 @@ begin
 
     -- Stimulus process
     stim_process : process
-        file input_file : text open read_mode is "matlab/signal_files/sine_phase_digital.txt";
+        file input_file : text open read_mode is "sine_phase_digital.txt";
         variable line_in : line;
-        variable hex_val : string(1 to 3);
+        variable hex_val : string(1 to 4);
         variable sample_unsigned : unsigned(13 downto 0);
         variable n : integer := 0;
+        variable i : integer; -- For manual hex conversion
+        variable out_line : line; -- For outputting results
     begin
         -- Reset
         rst <= '1';
@@ -74,7 +76,20 @@ begin
         while not endfile(input_file) loop
             readline(input_file, line_in);
             read(line_in, hex_val);
-            sample_unsigned := to_unsigned(to_integer(image'("16#" & hex_val)), 14);
+
+            -- Manual hex string to integer conversion
+            i := 0;
+            for idx in 1 to 4 loop
+                i := i * 16;
+                case hex_val(idx) is
+                    when '0' to '9' => i := i + character'pos(hex_val(idx)) - character'pos('0');
+                    when 'A' to 'F' => i := i + 10 + character'pos(hex_val(idx)) - character'pos('A');
+                    when 'a' to 'f' => i := i + 10 + character'pos(hex_val(idx)) - character'pos('a');
+                    when others => null;
+                end case;
+            end loop;
+
+            sample_unsigned := to_unsigned(i, 14);
             sample_in <= std_logic_vector(sample_unsigned);
             start <= '1';
             wait for clk_period;
@@ -82,12 +97,16 @@ begin
             wait for clk_period;
             n := n + 1;
         end loop;
-        file_close(input_file);
 
         -- Wait for outputs to settle
-        wait for clk_period * 1000;
-        report "Testbench finished.";
-        wait;
+        wait for clk_period * 10;
+
+		-- Print magnitude_squared value
+        write(out_line, string'("Magnitude Squared: "));
+        write(out_line, to_integer(unsigned(magnitude_squared)));
+        writeline(output, out_line);
+
+		report "Testbench finished.";
     end process;
 
 end Behavioral;
