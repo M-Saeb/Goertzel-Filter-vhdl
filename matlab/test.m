@@ -4,6 +4,22 @@ clc;
 clear;
 close all;
 
+
+function signal = generate_signal(frequencies, t, scaling_value, type)
+
+    % Generate the signal based on the specified type
+    switch type
+        case 'sine'
+            signal = (sin(2 * pi * frequencies .* t) + 1) * scaling_value; % +1 to shift the signal to only positive values
+        case 'triangle'
+            signal = (sawtooth(2 * pi * frequencies .* t) + 1) * scaling_value; % +1 to shift the signal to only positive values
+        case 'rectangular'
+            signal = (square(2 * pi * frequencies .* t) + 1) * scaling_value; % +1 to shift the signal to only positive values
+        otherwise
+            error('Unsupported signal type');
+    end
+end
+
 % Define the parameters
 target_freq = 173e3; 
 N = 137;   % Number of Samples
@@ -11,7 +27,7 @@ sampling_rate = 7.4e6; % Sampling rate of 7.4 MHz
 
 t = 0:1/sampling_rate:(N-1)/sampling_rate; % Time vector
 
-frequencies = [200e6 173e3 170e3 176e3 5e3 200e3 2e6];
+frequencies = [173e3 170e3 176e3 5e3 200e3 2e6];
 
 scaling_value = 2^14 - 1; % Scaling ths signal to fit in 14 bits
 
