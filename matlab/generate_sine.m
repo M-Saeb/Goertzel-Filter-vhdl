@@ -5,7 +5,8 @@ T = 0.001; % Duration in seconds
 frequencies = [173e3, 170e3, 176e3, 5e3, 200e3, 2e6]; 
 A = 1; % Amplitude of the analog signal
 nBits = 14; % Number of bits for quantization (14-bit ADC)
-outputFile = 'matlab/signal_files/sine_phase_digital.txt'; % Output file name
+outputFile = 'matlab/signal_files/sine_phase_digital.txt';
+% Output file name
 
 % Generate the analog signal 
 t = 0:1/Fs:T-(1/Fs); % Time vector
@@ -44,3 +45,4 @@ for i = 1:length(hexSignal)
     fprintf(fid, '%s\n', hexSignal(i, :));
 end
 fclose(fid);
+
